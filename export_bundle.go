@@ -36,6 +36,9 @@ func (p *Packer) ExportBundle(jobID string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	rec.Bundle.Ops = nil
+	// ExportBundle is a read of the stored bundle; it must not mutate the
+	// store-internal record. Clearing rec.Bundle.Ops here left subsequent
+	// exports (and ValidateStoredBundle) with an empty ops list, making the
+	// second export's wire shorter than the first.
 	return raw, nil
 }
